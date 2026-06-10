@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attention Mobility | Pitch Deck</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Three.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            light: '#f59e0b', /* Amber */
+                            DEFAULT: '#f59e0b',
+                            dark: '#b45309',
+                        },
+                        accent: {
+                            DEFAULT: '#10b981', /* Emerald */
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-slide-up { animation: slideUp 0.8s ease-out forwards; }
+        .glass {
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        /* Traffic Jam Vibe - Red Tail Lights Blur */
+        .traffic-window {
+            position: absolute;
+            inset: 0;
+            background: #0f172a;
+            z-index: 0;
+            overflow: hidden;
+        }
+        .traffic-light {
+            position: absolute;
+            width: 150px;
+            height: 150px;
+            background: rgba(220, 38, 38, 0.4);
+            filter: blur(50px);
+            border-radius: 50%;
+            animation: pulseLight 4s infinite alternate;
+        }
+        @keyframes pulseLight {
+            0% { opacity: 0.3; transform: translateX(0); }
+            100% { opacity: 0.7; transform: translateX(20px); }
+        }
+
+        #canvas-container {
+            width: 100%;
+            height: 400px;
+            cursor: grab;
+        }
+        #canvas-container:active { cursor: grabbing; }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-300 font-sans antialiased overflow-x-hidden selection:bg-brand selection:text-slate-900">
+
+    <!-- Navbar -->
+    <nav class="fixed w-full z-50 glass py-4 px-6 md:px-12 flex justify-between items-center border-b border-slate-800">
+        <div class="text-2xl font-black tracking-tighter flex items-center text-white">
+            <div class="w-8 h-8 rounded-lg bg-brand flex items-center justify-center mr-3 shadow-[0_0_15px_rgba(245,158,11,0.5)]">
+                <i class="fa-solid fa-car-side text-slate-900 text-sm"></i>
+            </div>
+            Attention<span class="text-brand">Mobility</span>
+        </div>
+        <div class="hidden md:flex space-x-8 text-sm font-semibold">
+            <a href="#problem" class="hover:text-brand transition">The Reality</a>
+            <a href="#core" class="hover:text-brand transition">Our 3 Pillars</a>
+            <a href="#hardware" class="hover:text-brand transition">The Setup</a>
+            <a href="#demo" class="bg-brand text-slate-900 px-5 py-2 rounded-full hover:bg-brand-light transition">3D Gym Demo</a>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="pt-32 pb-20 px-6 md:px-12 max-w-7xl mx-auto min-h-[85vh] flex flex-col justify-center animate-slide-up relative">
+        <div class="absolute top-1/4 right-0 w-96 h-96 bg-brand/10 blur-[150px] rounded-full pointer-events-none"></div>
+        <div class="max-w-4xl relative z-10">
+            <div class="inline-flex items-center space-x-2 bg-slate-900 border border-slate-700 px-4 py-2 rounded-full text-xs font-bold text-brand mb-8 shadow-lg">
+                <span class="w-2 h-2 rounded-full bg-brand animate-pulse"></span>
+                <span>The End of Wasted Commutes</span>
+            </div>
+            <h1 class="text-5xl md:text-7xl font-black leading-tight mb-6 text-white">
+                Outside is Gridlock.<br>
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand to-yellow-300">Inside is Opportunity.</span>
+            </h1>
+            <p class="text-xl text-slate-400 mb-10 max-w-2xl leading-relaxed">
+                We take zero platform fees from drivers. Instead, we transform the auto and cab backseat into a profitable hub of <strong>Relaxation, Entertainment, and Talent Royalties</strong>—making heavy traffic profitable for both the driver and the platform.
+            </p>
+            <div class="flex space-x-4">
+                <a href="#core" class="bg-brand text-slate-900 font-bold py-4 px-8 rounded-full hover:bg-brand-light transition shadow-[0_0_20px_rgba(245,158,11,0.3)]">Explore The Ecosystem</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- The Vibe / Problem Section -->
+    <section id="problem" class="py-20 px-6 md:px-12 bg-slate-900 border-y border-slate-800">
+        <div class="max-w-7xl mx-auto">
+            <h2 class="text-3xl font-bold mb-12 text-center text-white">The 2-Hour Traffic Problem</h2>
+            <div class="grid md:grid-cols-2 gap-12">
+                <div class="glass p-8 rounded-3xl border border-red-500/20">
+                    <h3 class="text-xl font-bold text-red-400 mb-4"><i class="fa-solid fa-triangle-exclamation mr-2"></i> The Driver's Loss</h3>
+                    <p class="text-sm leading-relaxed text-slate-400">
+                        When traffic hits a standstill, standard ride fares freeze, but fuel keeps burning. To make it worse, traditional apps still extract a 30% fee. Drivers are actively losing money while trapped in jams.
+                    </p>
+                </div>
+                <div class="glass p-8 rounded-3xl border border-orange-500/20">
+                    <h3 class="text-xl font-bold text-orange-400 mb-4"><i class="fa-solid fa-battery-empty mr-2"></i> The Passenger's Burnout</h3>
+                    <p class="text-sm leading-relaxed text-slate-400">
+                        Professionals are exhausted. Sitting in cramped spaces causes blood sugar drops, BP spikes, and motion sickness from staring down at phones. A 90-minute commute becomes a total waste of highly skilled human time.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Core Philosophy: The 3 Pillars -->
+    <section id="core" class="py-24 px-6 md:px-12 max-w-7xl mx-auto">
+        <div class="text-center mb-16">
+            <h2 class="text-4xl font-bold text-white mb-4">Our Three Pillars of Profit</h2>
+            <p class="text-slate-400 text-lg">How we detach the passenger from the stress and monetize the ride.</p>
+        </div>
+
+        <div class="space-y-8">
+            <!-- Pillar 1: Relaxation -->
+            <div class="glass p-10 rounded-3xl flex flex-col md:flex-row items-center gap-8 border-l-4 border-l-blue-500">
+                <div class="w-24 h-24 shrink-0 bg-blue-500/10 rounded-full flex items-center justify-center text-blue-500 text-4xl shadow-[0_0_30px_rgba(59,130,246,0.2)]">
+                    <i class="fa-solid fa-spa"></i>
+                </div>
+                <div>
+                    <h3 class="text-3xl font-bold text-white mb-3">1. Absolute Relaxation</h3>
+                    <p class="text-slate-400 leading-relaxed mb-4">
+                        We combat the physical stress of traffic. Cabs are equipped with <strong>12V Pay-Per-Minute Foot Massagers</strong> under the seat, and a low-power cooling pouch stocking chilled ORS/Water.
+                    </p>
+                    <div class="inline-flex bg-slate-900 border border-slate-700 rounded-lg px-4 py-2 text-xs">
+                        <span class="text-green-400 font-bold mr-2">Win-Win:</span> Drivers earn immediate retail margins on the water and a 60% cut of the massager fee, easily paying for their idle fuel.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pillar 2: Entertainment -->
+            <div class="glass p-10 rounded-3xl flex flex-col md:flex-row items-center gap-8 border-l-4 border-l-brand">
+                <div class="w-24 h-24 shrink-0 bg-brand/10 rounded-full flex items-center justify-center text-brand text-4xl shadow-[0_0_30px_rgba(245,158,11,0.2)]">
+                    <i class="fa-solid fa-gamepad"></i>
+                </div>
+                <div>
+                    <h3 class="text-3xl font-bold text-white mb-3">2. Captive Entertainment</h3>
+                    <p class="text-slate-400 leading-relaxed mb-4">
+                        We get passengers off their phones. The eye-level headrest tablet offers offline E-books, comics, and interactive 3D product showrooms. Because it's an interior screen, it bypasses all government outdoor ad restrictions.
+                    </p>
+                    <div class="inline-flex bg-slate-900 border border-slate-700 rounded-lg px-4 py-2 text-xs">
+                        <span class="text-brand font-bold mr-2">Monetization:</span> Brands pay premium CPM for 3D interactive ads because the passenger is highly engaged for an entire hour.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pillar 3: Talent Royalty -->
+            <div class="glass p-10 rounded-3xl flex flex-col md:flex-row items-center gap-8 border-l-4 border-l-purple-500">
+                <div class="w-24 h-24 shrink-0 bg-purple-500/10 rounded-full flex items-center justify-center text-purple-500 text-4xl shadow-[0_0_30px_rgba(168,85,247,0.2)]">
+                    <i class="fa-solid fa-graduation-cap"></i>
+                </div>
+                <div>
+                    <h3 class="text-3xl font-bold text-white mb-3">3. Talent Royalty ("Hello Talented")</h3>
+                    <p class="text-slate-400 leading-relaxed mb-4">
+                        For top professionals, time is money. Pre-book a cab, select your skill (e.g., Coding, Math), and our platform pushes B2B micro-tasks to the tablet during the jam. Record a formula shortcut or review a layout on the fly.
+                    </p>
+                    <div class="inline-flex bg-slate-900 border border-slate-700 rounded-lg px-4 py-2 text-xs">
+                        <span class="text-purple-400 font-bold mr-2">The Royalty Loop:</span> Corporate clients pay for the task. The earnings instantly pay off the passenger's cab fare and add royalty cash to their wallet.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Hardware Visuals (Cab & Auto CSS Diagrams) -->
+    <section id="hardware" class="py-24 bg-slate-950 border-y border-slate-900 overflow-hidden">
+        <div class="max-w-7xl mx-auto px-6 md:px-12">
+            <h2 class="text-4xl font-bold text-white mb-4 text-center">Inside the Mobile Sanctuary</h2>
+            <p class="text-slate-400 text-center mb-16 max-w-2xl mx-auto">While outside is a gridlock of red tail-lights, the inside is an oasis of productivity and retail.</p>
+            
+            <div class="grid md:grid-cols-2 gap-10">
+                
+                <!-- CAB VIEW -->
+                <div class="bg-slate-900 p-8 rounded-3xl border border-slate-800 shadow-2xl relative group">
+                    <h3 class="text-2xl font-bold text-white mb-6 flex items-center">
+                        <i class="fa-solid fa-car text-blue-400 mr-3"></i> The Smart Cab
+                    </h3>
+                    
+                    <!-- CSS Diagram -->
+                    <div class="relative w-full h-80 rounded-2xl border border-slate-700 overflow-hidden shadow-inner flex flex-col justify-between p-6">
+                        <!-- Traffic Background Effect -->
+                        <div class="traffic-window">
+                            <div class="traffic-light top-10 -left-10"></div>
+                            <div class="traffic-light bottom-20 right-10" style="animation-delay: 1s"></div>
+                        </div>
+
+                        <!-- Hardware Overlays (Z-10) -->
+                        <div class="relative z-10 w-full flex flex-col h-full justify-between">
+                            <!-- Screen -->
+                            <div class="w-3/4 mx-auto bg-slate-900/90 backdrop-blur-md border border-slate-600 rounded-xl p-4 shadow-2xl flex items-center justify-center h-28 transform transition group-hover:scale-105">
+                                <div class="text-center">
+                                    <i class="fa-solid fa-tablet-screen-button text-brand text-2xl mb-1"></i>
+                                    <p class="text-xs font-bold text-white">Hello Talented Portal</p>
+                                    <p class="text-[10px] text-slate-400">Powered via 12V Socket</p>
+                                </div>
+                            </div>
+                            
+                            <!-- Bottom Amenities -->
+                            <div class="flex justify-between items-end">
+                                <div class="bg-slate-900/90 backdrop-blur border border-blue-500/30 rounded-lg p-3 text-center shadow-lg">
+                                    <i class="fa-solid fa-bottle-droplet text-blue-400 text-xl mb-1"></i>
+                                    <p class="text-[10px] font-bold text-blue-100">Chilled ORS</p>
+                                </div>
+                                <div class="bg-slate-900/90 backdrop-blur border border-purple-500/30 rounded-t-xl p-4 text-center shadow-lg w-1/2">
+                                    <i class="fa-solid fa-shoe-prints text-purple-400 text-xl mb-1"></i>
+                                    <p class="text-[10px] font-bold text-purple-100">12V Foot Massager</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- AUTO VIEW -->
+                <div class="bg-slate-900 p-8 rounded-3xl border border-slate-800 shadow-2xl relative group">
+                    <h3 class="text-2xl font-bold text-white mb-6 flex items-center">
+                        <i class="fa-solid fa-truck-fast text-brand mr-3"></i> The Smart Auto
+                    </h3>
+                    
+                    <!-- CSS Diagram -->
+                    <div class="relative w-full h-80 rounded-2xl border border-slate-700 overflow-hidden shadow-inner flex flex-col justify-between p-6">
+                        <!-- Traffic Background Effect -->
+                        <div class="traffic-window">
+                            <div class="traffic-light top-5 right-5" style="animation-duration: 3s"></div>
+                            <div class="traffic-light bottom-5 -left-5" style="animation-delay: 2s"></div>
+                        </div>
+
+                        <div class="relative z-10 w-full flex flex-col h-full justify-between">
+                            <!-- Screen -->
+                            <div class="w-full bg-slate-900/90 backdrop-blur-md border border-slate-600 rounded-xl p-4 shadow-2xl flex items-center justify-center h-28 transform transition group-hover:scale-105">
+                                <div class="text-center">
+                                    <i class="fa-solid fa-book-open text-brand text-2xl mb-1"></i>
+                                    <p class="text-xs font-bold text-white">E-Books & 3D Ads</p>
+                                    <p class="text-[10px] text-slate-400">Eye-Level Entertainment</p>
+                                </div>
+                            </div>
+                            
+                            <!-- Base battery -->
+                            <div class="w-full bg-slate-900/90 backdrop-blur border border-green-500/30 rounded-xl p-3 flex justify-between items-center shadow-lg">
+                                <div class="text-center px-4 border-r border-slate-700 w-1/2">
+                                    <i class="fa-solid fa-box-open text-slate-300 text-lg mb-1"></i>
+                                    <p class="text-[10px] text-slate-400">Retail Box</p>
+                                </div>
+                                <div class="text-center px-4 w-1/2">
+                                    <i class="fa-solid fa-car-battery text-green-400 text-lg mb-1"></i>
+                                    <p class="text-[10px] font-bold text-green-300">Aux Power Pack</p>
+                                    <p class="text-[8px] text-slate-500">Zero Engine Drain</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- 3D Realistic Gym Ad Sandbox -->
+    <section id="demo" class="py-24 px-6 md:px-12 max-w-7xl mx-auto">
+        <div class="text-center mb-12">
+            <h2 class="text-4xl font-bold text-white mb-4">The Entertainment: <span class="text-brand">3D E-Commerce</span></h2>
+            <p class="text-slate-400 text-lg max-w-2xl mx-auto">This is what passengers do instead of stressing over traffic. They interact with realistic product ads. <strong>Try swiping and rotating the gym weight below!</strong></p>
+        </div>
+
+        <div class="max-w-5xl mx-auto">
+            <!-- Simulated Tablet Shell -->
+            <div class="bg-slate-900 border-[10px] border-slate-800 rounded-[2rem] shadow-2xl overflow-hidden flex flex-col md:flex-row h-[500px]">
+                
+                <!-- Ad Copy Side -->
+                <div class="md:w-1/3 bg-slate-950 p-8 flex flex-col justify-center border-r border-slate-800 relative z-10">
+                    <div class="inline-block px-3 py-1 bg-brand/20 text-brand text-[10px] font-bold uppercase tracking-widest rounded-full mb-4 w-max">Sponsored Ad</div>
+                    <h3 class="text-4xl font-black text-white mb-2 italic">IRON-X</h3>
+                    <p class="text-lg font-bold text-slate-300 mb-2">Adjustable Kettle/Dumbbell</p>
+                    <p class="text-sm text-slate-500 mb-8 leading-relaxed">Bring the gym home. Rotate to inspect the ergonomic knurled grip and locking mechanism.</p>
+                    
+                    <button class="w-full bg-white hover:bg-slate-200 text-black font-black py-4 rounded-xl flex items-center justify-center transition uppercase tracking-wide">
+                        <i class="fa-solid fa-cart-shopping mr-3"></i> Add to Cart
+                    </button>
+                </div>
+
+                <!-- Three.js Canvas Side -->
+                <div class="md:w-2/3 relative bg-gradient-to-tr from-slate-900 via-slate-800 to-slate-900 cursor-grab active:cursor-grabbing">
+                    <div id="canvas-container" class="w-full h-full"></div>
+                    
+                    <!-- Overlay hint -->
+                    <div class="absolute bottom-6 left-1/2 -translate-x-1/2 bg-black/60 backdrop-blur-md px-6 py-3 rounded-full border border-slate-700 flex items-center space-x-6 pointer-events-none">
+                        <div class="flex items-center text-xs font-bold text-white"><i class="fa-solid fa-hand-pointer text-brand mr-2"></i> Swipe to Rotate</div>
+                        <div class="w-px h-4 bg-slate-600"></div>
+                        <div class="flex items-center text-xs font-bold text-white"><i class="fa-solid fa-magnifying-glass text-brand mr-2"></i> Scroll to Zoom</div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Economics Calculator -->
+    <section class="py-24 bg-slate-900 border-t border-slate-800">
+        <div class="max-w-5xl mx-auto px-6 md:px-12">
+            <h2 class="text-3xl font-bold mb-12 text-center text-white">The Profit Simulator</h2>
+            
+            <div class="grid md:grid-cols-2 gap-12 bg-slate-950 p-10 rounded-3xl border border-slate-800 shadow-[0_20px_50px_rgba(0,0,0,0.5)]">
+                <!-- Controls -->
+                <div class="space-y-8 flex flex-col justify-center">
+                    <div>
+                        <div class="flex justify-between text-sm mb-3">
+                            <label class="text-slate-400 font-bold"><i class="fa-solid fa-clock text-brand mr-2"></i>Traffic Jam Duration</label>
+                            <span id="time-val" class="font-bold text-white bg-slate-800 px-3 py-1 rounded-md">90 mins</span>
+                        </div>
+                        <input type="range" id="time-slider" min="15" max="120" value="90" class="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-brand">
+                    </div>
+                    <div>
+                        <div class="flex justify-between text-sm mb-3">
+                            <label class="text-slate-400 font-bold"><i class="fa-solid fa-bottle-water text-blue-400 mr-2"></i>ORS/Water Sold</label>
+                            <span id="water-val" class="font-bold text-white bg-slate-800 px-3 py-1 rounded-md">3 items</span>
+                        </div>
+                        <input type="range" id="water-slider" min="0" max="8" value="3" class="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-blue-500">
+                    </div>
+                    <div>
+                        <div class="flex justify-between text-sm mb-3">
+                            <label class="text-slate-400 font-bold"><i class="fa-solid fa-bolt text-purple-400 mr-2"></i>Massager Minutes</label>
+                            <span id="massage-val" class="font-bold text-white bg-slate-800 px-3 py-1 rounded-md">20 mins</span>
+                        </div>
+                        <input type="range" id="massage-slider" min="0" max="60" value="20" class="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-purple-500">
+                    </div>
+                </div>
+
+                <!-- Dashboard Outputs -->
+                <div class="bg-slate-900 p-8 rounded-2xl border border-slate-700 flex flex-col justify-center space-y-6">
+                    <div class="flex justify-between items-center pb-4 border-b border-slate-800">
+                        <div>
+                            <p class="text-xs font-bold text-green-400 uppercase tracking-widest">Driver Profit</p>
+                            <p class="text-[10px] text-slate-500 mt-1">Retail + Hardware Cut</p>
+                        </div>
+                        <div class="text-4xl font-black text-white">₹<span id="out-driver">0</span></div>
+                    </div>
+                    
+                    <div class="flex justify-between items-center pb-4 border-b border-slate-800">
+                        <div>
+                            <p class="text-xs font-bold text-brand uppercase tracking-widest">Startup Profit</p>
+                            <p class="text-[10px] text-slate-500 mt-1">Wholesale + Platform Cut</p>
+                        </div>
+                        <div class="text-4xl font-black text-white">₹<span id="out-startup">0</span></div>
+                    </div>
+
+                    <div class="flex justify-between items-center bg-blue-900/20 p-4 rounded-xl border border-blue-500/30">
+                        <div>
+                            <p class="text-xs font-bold text-blue-400 uppercase tracking-widest">3D Ad Value</p>
+                            <p class="text-[10px] text-blue-500/70 mt-1">Premium CPM Earned</p>
+                        </div>
+                        <div class="text-3xl font-black text-blue-400">₹<span id="out-ads">0</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-black py-10 text-center border-t border-slate-900">
+        <div class="text-2xl font-black tracking-tighter mb-4 text-white">
+            Attention<span class="text-brand">Mobility</span>
+        </div>
+        <p class="text-slate-600 text-xs">Proprietary Pitch Deck © 2026</p>
+    </footer>
+
+    <!-- THREE.JS GYM DUMBBELL SCRIPT -->
+    <script>
+        const container = document.getElementById('canvas-container');
+        const scene = new THREE.Scene();
+        
+        // Camera setup
+        const camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 1000);
+        camera.position.z = 8;
+        camera.position.y = 2;
+        
+        // Renderer setup
+        const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+        renderer.setSize(container.clientWidth, container.clientHeight);
+        renderer.setPixelRatio(window.devicePixelRatio);
+        renderer.shadowMap.enabled = true;
+        container.appendChild(renderer.domElement);
+        
+        // Lighting for metallic feel
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+        scene.add(ambientLight);
+        
+        const dirLight = new THREE.DirectionalLight(0xffffff, 1);
+        dirLight.position.set(5, 10, 5);
+        scene.add(dirLight);
+
+        const fillLight = new THREE.DirectionalLight(0x4ade80, 0.3); // Slight green hue for high-tech gym feel
+        fillLight.position.set(-5, 0, -5);
+        scene.add(fillLight);
+
+        // Building the 3D Dumbbell
+        const dumbbellGroup = new THREE.Group();
+
+        // 1. The Handle (Metallic)
+        const handleGeo = new THREE.CylinderGeometry(0.25, 0.25, 3, 32);
+        const matMetal = new THREE.MeshStandardMaterial({ 
+            color: 0xcccccc, 
+            metalness: 0.9, 
+            roughness: 0.3 
+        });
+        const handle = new THREE.Mesh(handleGeo, matMetal);
+        handle.rotation.z = Math.PI / 2; // Lay flat
+        dumbbellGroup.add(handle);
+
+        // 2. The Weights (Matte Black Hexagon style - approximated with low segment cylinder)
+        const weightGeo = new THREE.CylinderGeometry(1.2, 1.2, 0.8, 8); // Octagon look
+        const matDark = new THREE.MeshStandardMaterial({ 
+            color: 0x111111, 
+            metalness: 0.2, 
+            roughness: 0.8,
+            flatShading: true
+        });
+
+        // Left Weight Block
+        const leftWeight = new THREE.Mesh(weightGeo, matDark);
+        leftWeight.rotation.z = Math.PI / 2;
+        leftWeight.position.x = -1.6;
+        dumbbellGroup.add(leftWeight);
+
+        // Left Weight Inner Cap
+        const leftCapGeo = new THREE.CylinderGeometry(0.6, 0.6, 0.4, 32);
+        const leftCap = new THREE.Mesh(leftCapGeo, matMetal);
+        leftCap.rotation.z = Math.PI / 2;
+        leftCap.position.x = -1.1;
+        dumbbellGroup.add(leftCap);
+
+        // Right Weight Block
+        const rightWeight = new THREE.Mesh(weightGeo, matDark);
+        rightWeight.rotation.z = Math.PI / 2;
+        rightWeight.position.x = 1.6;
+        dumbbellGroup.add(rightWeight);
+
+        // Right Weight Inner Cap
+        const rightCap = new THREE.Mesh(leftCapGeo, matMetal);
+        rightCap.rotation.z = Math.PI / 2;
+        rightCap.position.x = 1.1;
+        dumbbellGroup.add(rightCap);
+
+        // Angle the whole group slightly for better initial view
+        dumbbellGroup.rotation.x = 0.3;
+        dumbbellGroup.rotation.y = 0.5;
+        scene.add(dumbbellGroup);
+        
+        // Orbit Controls (Letting user interact)
+        const controls = new THREE.OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true;
+        controls.dampingFactor = 0.05;
+        controls.enablePan = false;
+        controls.minDistance = 4;
+        controls.maxDistance = 12;
+        
+        // Animation Loop
+        function animate() {
+            requestAnimationFrame(animate);
+            
+            // Slowly auto-rotate the dumbbell to show off the 3D aspect
+            dumbbellGroup.rotation.y += 0.003;
+            
+            controls.update();
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        // Responsive Resize
+        window.addEventListener('resize', () => {
+            if(container) {
+                camera.aspect = container.clientWidth / container.clientHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(container.clientWidth, container.clientHeight);
+            }
+        });
+    </script>
+
+    <!-- CALCULATOR SCRIPT -->
+    <script>
+        const tSlider = document.getElementById('time-slider');
+        const wSlider = document.getElementById('water-slider');
+        const mSlider = document.getElementById('massage-slider');
+        
+        function updateCalc() {
+            const time = parseInt(tSlider.value);
+            const water = parseInt(wSlider.value);
+            const massage = parseInt(mSlider.value);
+            
+            document.getElementById('time-val').innerText = time + " mins";
+            document.getElementById('water-val').innerText = water + " items";
+            document.getElementById('massage-val').innerText = massage + " mins";
+
+            // The Math
+            const DRIVER_MARGIN_PER_ITEM = 12; // Driver earns 12 rs per bottle
+            const PLATFORM_MARGIN_PER_ITEM = 5; // Startup wholesale margin
+            const MASSAGE_PER_MIN = 2.5; // 2.5 rs per min
+            const AD_CPM_RATE = 3; // 3 rs per minute of active screen time
+            
+            const driverEarn = (water * DRIVER_MARGIN_PER_ITEM) + (massage * MASSAGE_PER_MIN * 0.6);
+            const startupEarn = (water * PLATFORM_MARGIN_PER_ITEM) + (massage * MASSAGE_PER_MIN * 0.4);
+            const adsEarn = (time * AD_CPM_RATE);
+
+            document.getElementById('out-driver').innerText = driverEarn.toFixed(0);
+            document.getElementById('out-startup').innerText = startupEarn.toFixed(0);
+            document.getElementById('out-ads').innerText = adsEarn.toFixed(0);
+        }
+
+        tSlider.addEventListener('input', updateCalc);
+        wSlider.addEventListener('input', updateCalc);
+        mSlider.addEventListener('input', updateCalc);
+
+        updateCalc();
+    </script>
+</body>
+</html>
